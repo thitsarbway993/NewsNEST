@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
     // Add query parameters for crypto news
     apiParams.append('q', 'crypto OR cryptocurrency OR blockchain');
     apiParams.append('category', 'business');
+    apiParams.append('language', 'en');
     
     if (nextPage) {
       apiParams.append('page', nextPage);
