@@ -15,7 +15,7 @@ module.exports = withPWA({
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**', // Allow all domains
+        hostname: '**', 
         port: '',
         pathname: '**',
       },
