@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       }, { status: 500 });
     }
 
-    const baseUrl = 'https://newsdata.io/api/1/news';
+    const baseUrl = 'https://newsdata.io/api/1/latest';
     const apiParams = new URLSearchParams({
       apikey: API_KEY,
       language: 'en',

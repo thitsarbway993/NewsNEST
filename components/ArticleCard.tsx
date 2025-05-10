@@ -35,7 +35,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             {article.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {article.description}
+            {article.description.substring(0, 100) + '...'}
           </Typography>
         </CardContent>
       </CardActionArea>

@@ -18,7 +18,6 @@ export async function GET(
      const url = `https://newsdata.io/api/1/news?apikey=${API_KEY}&id=${id}`;
     const response = await fetch(url);
     const data = await response.json();
-    console.log('Response from News API:', data);
 
     if (data.results?.length > 0) {
       const article = data.results[0];

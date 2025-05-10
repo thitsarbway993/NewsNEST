@@ -10,7 +10,8 @@ import {
   Chip,
   CircularProgress,
   Container,
-  Button
+  Button,
+  ButtonBase
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
@@ -63,7 +64,7 @@ export default function NewsDetail({ articleId }: NewsDetailProps) {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Button onClick={()=>router.back()}>Back</Button>
+        <ButtonBase onClick={()=>router.back()}>Back</ButtonBase>
       <Card elevation={3}>
         {article.image_url && (
           <CardMedia
@@ -101,8 +102,12 @@ export default function NewsDetail({ articleId }: NewsDetailProps) {
             </Box>
           )}
 
+          <Typography variant="body2" color="text.secondary" paragraph>
+            {article.description}
+          </Typography>
+
           <Typography variant="body1" paragraph>
-            {article.content}
+            Content : {article.content} 
           </Typography>
         </CardContent>
       </Card>
