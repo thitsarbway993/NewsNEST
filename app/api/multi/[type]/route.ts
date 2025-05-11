@@ -7,11 +7,11 @@ export async function GET(
   try {
     const { searchParams } = new URL(request.url);
     const nextPage = searchParams.get('nextPage');
-    // NewsData.io API only accepts size values of 10 or fewer items
-    const size = '10'; // Fixed size to comply with API requirements
+    const size = '10';
     const API_KEY = process.env.NEWSDATA_API_KEY;
     const type = await params.type;
-    const validTypes = ['latest', 'news'];
+    const validTypes = ['latest', 'news', 'all'];
+    console.log('Type:', type);
 
     if (!API_KEY) {
       return NextResponse.json({ 
@@ -20,23 +20,60 @@ export async function GET(
       }, { status: 500 });
     }
 
-    const baseUrl = 'https://newsdata.io/api/1/latest';
+    const baseUrl = 'https://newsdata.io/api/1/news';
     const apiParams = new URLSearchParams({
       apikey: API_KEY,
       language: 'en',
-      size // Using fixed size of 10
+      size
     });
 
-    // Add query parameters for crypto news
-    apiParams.append('q', 'breaking OR urgent OR alert OR earthquake OR election OR war OR conflict OR attack OR violence OR protest OR riot OR demonstration');
-    apiParams.append('category', 'business');
-    apiParams.append('language', 'en');
-    
+    // Configure different news types
+    switch (type) {
+      case 'latest':
+        // Latest technology and business news
+        apiParams.append('q', 'technology OR innovation OR startup OR business OR mobile OR AI OR artificial intelligence');
+        apiParams.append('category', 'technology,business');
+        apiParams.append('prioritydomain', 'top');
+        break;
+
+      case 'news':
+        // Breaking and important news
+        apiParams.append('q', `
+          (breaking OR urgent OR alert OR major OR significant)
+          AND
+          (world OR global OR international OR national)
+          AND NOT
+          (crypto OR cryptocurrency OR bitcoin)
+        `.replace(/\s+/g, ' ').trim());
+        apiParams.append('category', 'top,world');
+        break;
+
+      case 'all':
+        // Combined news and crypto
+        apiParams.append('q', `
+          (breaking OR urgent OR technology OR business)
+          AND
+          (bitcoin OR ethereum OR crypto OR cryptocurrency OR blockchain OR web3 OR defi OR metaverse OR AI OR technology OR innovation)
+          AND
+          (market OR price OR trading OR investment OR finance)
+        `.replace(/\s+/g, ' ').trim());
+        apiParams.append('category', 'business,technology'); // Using valid categories only
+        apiParams.append('domain', 'coindesk.com,cointelegraph.com,decrypt.co,theblock.co'); // Add crypto-focused domains
+        break;
+
+      default:
+        return NextResponse.json({
+          success: false,
+          error: 'Invalid news type'
+        }, { status: 400 });
+    }
+
     if (nextPage) {
       apiParams.append('page', nextPage);
     }
 
     const url = `${baseUrl}?${apiParams.toString()}`;
+    console.log('Fetching from:', url);
 
     const response = await fetch(url, {
       headers: {
@@ -45,6 +82,7 @@ export async function GET(
     });
     
     const data = await response.json();
+    console.log('API response:', data);
 
     if (data.status !== 'success') {
       throw new Error(data.message || 'News API request failed');
@@ -54,7 +92,8 @@ export async function GET(
       success: true,
       articles: data.results || [],
       nextPage: data.nextPage || null,
-      totalResults: data.totalResults || 0
+      totalResults: data.totalResults || 0,
+      type: type // Include the type in response
     });
 
   } catch (error: any) {

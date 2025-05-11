@@ -27,7 +27,8 @@ export default function LatestNews() {
       setLoading(true);
       setError('');
 
-      const response = await fetch('/api/news');
+      //const response = await fetch('/api/multi/news?type=all');
+      const response = await fetch('/api/multi/all');
       const result = await response.json();
       console.log('API response:', result);
 
