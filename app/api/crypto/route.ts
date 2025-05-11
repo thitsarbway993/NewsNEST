@@ -32,7 +32,6 @@ export async function GET(request: NextRequest) {
     }
 
     const url = `${baseUrl}?${apiParams.toString()}`;
-    console.log('Fetching from:', url);
 
     const response = await fetch(url, {
       headers: {

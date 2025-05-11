@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { type: string } }
+) {
   try {
     const { searchParams } = new URL(request.url);
     const nextPage = searchParams.get('nextPage');
     // NewsData.io API only accepts size values of 10 or fewer items
     const size = '10'; // Fixed size to comply with API requirements
     const API_KEY = process.env.NEWSDATA_API_KEY;
+    const type = await params.type;
+    const validTypes = ['latest', 'news'];
 
     if (!API_KEY) {
       return NextResponse.json({ 
@@ -22,9 +27,10 @@ export async function GET(request: NextRequest) {
       size // Using fixed size of 10
     });
 
-    apiParams.append('q', 'movies OR mobile OR technology OR business OR startup OR finance ');
+    // Add query parameters for crypto news
+    apiParams.append('q', 'breaking OR urgent OR alert OR earthquake OR election OR war OR conflict OR attack OR violence OR protest OR riot OR demonstration');
+    apiParams.append('category', 'business');
     apiParams.append('language', 'en');
-
     
     if (nextPage) {
       apiParams.append('page', nextPage);

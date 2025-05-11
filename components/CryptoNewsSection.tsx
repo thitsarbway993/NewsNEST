@@ -42,7 +42,7 @@ export default function CryptoNewsSection() {
   };
 
   const handleClick = (id : string) => {
-    router.push(`/news/${id}`);
+    router.push(`/news/${id} ?type=crypto`);
   };
 
   useEffect(() => {

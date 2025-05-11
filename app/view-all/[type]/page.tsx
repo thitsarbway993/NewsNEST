@@ -13,6 +13,8 @@ export default function ViewAllCrypto() {
   const [error, setError] = useState('');
   const params = useParams();
   const router = useRouter();
+  let typ = params.type as string;
+
 
   const loadArticles = async () => {
     try {
@@ -49,7 +51,7 @@ export default function ViewAllCrypto() {
     }
   };
    const handleClick = (id : string) => {
-    router.push(`/news/${id}`);
+    router.push(`/news/${id} ?type=${params.type}`);
   };
 
   useEffect(() => {
@@ -64,7 +66,7 @@ export default function ViewAllCrypto() {
         textDecoration: 'underline', 
         mb: 6 
       }}>
-        Latest Cryptocurrency Updates
+        Latest {typ.toWellFormed()} Updates
       </Typography>
 
       <Box sx={{ 

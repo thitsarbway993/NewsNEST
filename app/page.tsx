@@ -3,6 +3,7 @@ import NavLinks from '@/components/NavLinks';
 import InstallPWA from '../components/InstallPWA';
 import NewsT from './latest/page';
 import CryptoNewsSection from '@/components/CryptoNewsSection';
+import BreakingNews from '@/components/BreakingNews';
 
 export default function HomePage() {
 
@@ -10,8 +11,9 @@ export default function HomePage() {
     <main style={{ padding: '1rem' }}>
       <InstallPWA />
       <NavLinks/>
-      {/* <NewsT/> */}
-      <CryptoNewsSection/>
+      <BreakingNews/>
+      <NewsT/>
+      {/* <CryptoNewsSection/> */}
     </main>
   );
 }

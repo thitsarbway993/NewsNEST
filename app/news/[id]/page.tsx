@@ -1,14 +1,12 @@
 'use client';
 
-import NewsDetail from '@/components/NewsDetail';
 import { useParams } from 'next/navigation';
+import NewsDetail from '@/components/NewsDetail';
 
 export default function NewsDetailPage() {
   const params = useParams();
-    if (!params.id) {
-        return <div>Article ID is missing</div>;
-    }
   const articleId = params.id as string;
+  const type = params.type as 'crypto' | 'news';
 
-  return <NewsDetail articleId={articleId} />;
+  return <NewsDetail articleId={articleId} type={type} />;
 }
