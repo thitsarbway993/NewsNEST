@@ -77,7 +77,8 @@ export default function ViewAllCrypto() {
         gap: 3
       }}>
         {articles.map((article, idx) => (
-          <React.Fragment key={article.article_id || idx}>
+          // Changed key to include both id and index for uniqueness
+          <React.Fragment key={`${article.article_id || 'article'}-${idx}`}>
             {article.image_url ? (
               <Card sx={{ 
                 gridColumn: article.image_url !== null ? 'span 2' : 'span 1',
@@ -114,21 +115,49 @@ export default function ViewAllCrypto() {
                 </CardActionArea>
               </Card>
             ) : (
-              <Card   className="shadow-[1px_1px_3px_gray] w-[250px]  lg:max-w-lg bg-white rounded-lg p-4">
-                <ButtonBase onClick={() => handleClick(article.article_id)} className='flex flex-col items-start '>
-                  <Typography variant="h5" sx={{ fontWeight: 700, lineHeight: 1.2, mb: 1.5 }}>
-                    {article.title}
-                  </Typography>
-                  {article.description && (
-                    <Typography sx={{ fontSize: '1rem', color: 'text.primary', mb: 2 }}>
-                      {article.description.substring(0, 100) + '...'}
+              // no image section
+              <Card className="shadow-[1px_1px_3px_gray] w-[250px] lg:max-w-lg bg-white rounded-lg p-4">
+                <ButtonBase 
+                  onClick={() => handleClick(article.article_id)} 
+                  className='w-full'  // Add full width
+                >
+                  <Box className='flex flex-col items-start w-full text-left'> {/* Add text alignment */}
+                    <Typography 
+                      variant="h5" 
+                      sx={{ 
+                        fontWeight: 700, 
+                        lineHeight: 1.2, 
+                        mb: 1.5,
+                        textAlign: 'left', // Ensure left alignment
+                        width: '100%'      // Full width for text
+                      }}
+                    >
+                      {article.title || 'No title available'}
                     </Typography>
-                  )}
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Avatar src={article.source_id} />
-                    <Typography sx={{ fontWeight: 500 }}>
-                      {article.source_id}
-                    </Typography>
+                    {article.description && (
+                      <Typography 
+                        sx={{ 
+                          fontSize: '1rem', 
+                          color: 'text.primary', 
+                          mb: 2,
+                          textAlign: 'left',  // Ensure left alignment
+                          width: '100%'       // Full width for text
+                        }}
+                      >
+                        {article.description.substring(0, 100) + '...'}
+                      </Typography>
+                    )}
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: 1,
+                      width: '100%'  // Full width for source info
+                    }}>
+                      <Avatar src={article.source_id} />
+                      <Typography sx={{ fontWeight: 500 }}>
+                        {article.source_id || 'Unknown Source'}
+                      </Typography>
+                    </Box>
                   </Box>
                 </ButtonBase>
               </Card>
