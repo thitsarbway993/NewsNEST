@@ -31,7 +31,7 @@ export async function GET(
     switch (type) {
       case 'latest':
         // Latest technology and business news
-        apiParams.append('q', 'technology OR innovation OR startup OR business OR mobile OR AI OR artificial intelligence');
+        apiParams.append('q', 'movies OR Messi OR technology OR innovation OR startup OR business OR mobile OR AI OR artificial intelligence');
         apiParams.append('category', 'technology,business');
         apiParams.append('prioritydomain', 'top');
         break;
@@ -48,17 +48,17 @@ export async function GET(
         apiParams.append('category', 'top,world');
         break;
 
-      case 'all':
+            case 'all':
         // Combined news and crypto
         apiParams.append('q', `
-          (breaking OR urgent OR technology OR business)
+          (breaking OR urgent OR technology OR business OR finance)
           AND
-          (bitcoin OR ethereum OR crypto OR cryptocurrency OR blockchain OR web3 OR defi OR metaverse OR AI OR technology OR innovation)
+          (bitcoin OR ethereum OR crypto OR cryptocurrency OR blockchain OR web3 OR defi OR nft OR metaverse)
           AND
-          (market OR price OR trading OR investment OR finance)
+          (market OR price OR trading OR investment OR analysis OR update OR news)
         `.replace(/\s+/g, ' ').trim());
-        apiParams.append('category', 'business,technology'); // Using valid categories only
-        apiParams.append('domain', 'coindesk.com,cointelegraph.com,decrypt.co,theblock.co'); // Add crypto-focused domains
+        apiParams.append('category', 'business,technology');
+        apiParams.append('prioritydomain', 'top');  // Use prioritydomain instead of specific domains
         break;
 
       default:
