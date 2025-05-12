@@ -14,6 +14,9 @@ export default function ViewAllCrypto() {
   const params = useParams();
   const router = useRouter();
   let typ = params.type as string;
+  if (typ === 'all') {
+    typ = 'cryptocurrency';
+  } 
 
 
   const loadArticles = async () => {
@@ -29,7 +32,7 @@ export default function ViewAllCrypto() {
         queryParams.set('nextPage', nextPage);
       }
 
-      const response = await fetch(`/api/${params.type}?${queryParams.toString()}`);
+      const response = await fetch(`/api/multi/${params.type}?${queryParams.toString()}`);
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -66,7 +69,7 @@ export default function ViewAllCrypto() {
         textDecoration: 'underline', 
         mb: 6 
       }}>
-        Latest {typ.toWellFormed()} Updates
+        Latest {typ.toLocaleUpperCase()} Updates
       </Typography>
 
       <Box sx={{ 
@@ -83,8 +86,10 @@ export default function ViewAllCrypto() {
           <React.Fragment key={`${article.article_id || 'article'}-${idx}`}>
             {article.image_url ? (
               <Card sx={{ 
-                gridColumn: article.image_url !== null ? 'span 2' : 'span 1',
-                overflow: 'hidden'
+                gridColumn: 'span 2',
+                //gridColumn: (idx  % 5 == 0) ? 'span 2' : 'span 1',
+                overflow: 'hidden',
+                height: 'auto'
               }}>
                 <CardActionArea onClick={() => handleClick(article.article_id)}>
                   <CardMedia
@@ -106,10 +111,10 @@ export default function ViewAllCrypto() {
                       </Typography>
                     )}
                     <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-                      <Avatar src={article.source_id} />
+                      <Avatar src={article.source_icon} />
                       <Box sx={{ ml: 1 }}>
                         <Typography sx={{ fontWeight: 500 }}>
-                          {article.source_id}
+                          {article.source_name || 'Unknown Source'}
                         </Typography>
                       </Box>
                     </Box>
@@ -118,7 +123,7 @@ export default function ViewAllCrypto() {
               </Card>
             ) : (
               // no image section
-              <Card className="shadow-[1px_1px_3px_gray] w-[250px] lg:max-w-lg bg-white rounded-lg p-4">
+              <Card className="h-auto shadow-[1px_1px_3px_gray] w-[250px] lg:max-w-lg bg-white rounded-lg p-4">
                 <ButtonBase 
                   onClick={() => handleClick(article.article_id)} 
                   className='w-full'  // Add full width
@@ -155,9 +160,9 @@ export default function ViewAllCrypto() {
                       gap: 1,
                       width: '100%'  // Full width for source info
                     }}>
-                      <Avatar src={article.source_id} />
+                      <Avatar src={article.source_icon} />
                       <Typography sx={{ fontWeight: 500 }}>
-                        {article.source_id || 'Unknown Source'}
+                        {article.source_name || 'Unknown Source'}
                       </Typography>
                     </Box>
                   </Box>

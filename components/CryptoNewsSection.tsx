@@ -24,7 +24,7 @@ export default function CryptoNewsSection() {
       setLoading(true);
       setError('');
 
-      const response = await fetch('/api/crypto');
+      const response = await fetch('/api/multi/all');
       const result = await response.json();
       console.log('API response:', result);
 
@@ -42,7 +42,7 @@ export default function CryptoNewsSection() {
   };
 
   const handleClick = (id : string) => {
-    router.push(`/news/${id} ?type=crypto`);
+    router.push(`/news/${id} ?type=all`);
   };
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function CryptoNewsSection() {
   }, []);
 
   const handleViewAll = () => {
-    router.push('/view-all/crypto');
+    router.push('/view-all/all');
   };
 
   const truncateText = (text: string | null, maxLength: number) => {

@@ -33,7 +33,6 @@ export async function GET(
     });
     
     const data = await response.json();
-    console.log('API response:', data);
 
     if (data.status !== 'success') {
       throw new Error(data.message || 'News API request failed');

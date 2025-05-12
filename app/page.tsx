@@ -11,9 +11,9 @@ export default function HomePage() {
     <main style={{ padding: '1rem' }}>
       <InstallPWA />
       <NavLinks/>
-      <BreakingNews/>
-      <NewsT/>
-      {/* <CryptoNewsSection/> */}
+      {/* <BreakingNews/>
+      <NewsT/> */}
+      <CryptoNewsSection/>
     </main>
   );
 }

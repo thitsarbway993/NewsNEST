@@ -57,7 +57,7 @@ export async function GET(
           AND
           (market OR price OR trading OR investment OR analysis OR update OR news)
         `.replace(/\s+/g, ' ').trim());
-        apiParams.append('category', 'business,technology');
+        //apiParams.append('category', 'business,technology');
         apiParams.append('prioritydomain', 'top');  // Use prioritydomain instead of specific domains
         break;
 
@@ -82,7 +82,6 @@ export async function GET(
     });
     
     const data = await response.json();
-    console.log('API response:', data);
 
     if (data.status !== 'success') {
       throw new Error(data.message || 'News API request failed');

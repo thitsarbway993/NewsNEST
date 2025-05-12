@@ -11,7 +11,8 @@ import {
   CircularProgress,
   Container,
   ButtonBase,
-  Alert
+  Alert,
+  Avatar
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -25,11 +26,12 @@ interface NewsArticle {
   category?: string[];
   source_id: string;
   pubDate?: string;
+  source_icon?: string;
 }
 
 interface NewsDetailProps {
   articleId: string;
-  type?: 'crypto' | 'news';
+  type?:  'news' | 'latest' | 'all';
 }
 
 export default function NewsDetail({ articleId, type = 'news' }: NewsDetailProps) {
@@ -44,8 +46,8 @@ export default function NewsDetail({ articleId, type = 'news' }: NewsDetailProps
         setLoading(true);
         setError('');
         
-        const endpoint = type === 'crypto' ? 'crypto' : 'news';
-        const response = await fetch(`/api/${endpoint}/${articleId}`);
+        const endpoint = type ;
+        const response = await fetch(`/api/multi/${endpoint}/${articleId}`);
         if (!response.ok) { 
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -128,6 +130,7 @@ export default function NewsDetail({ articleId, type = 'news' }: NewsDetailProps
           </Typography>
           
           <Box sx={{ mb: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+            <Avatar src={article.source_icon} />
             <Typography color="text.secondary" variant="body2">
               Source: {article.source_id}
             </Typography>
