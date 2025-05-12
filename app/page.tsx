@@ -4,6 +4,7 @@ import InstallPWA from '../components/InstallPWA';
 import NewsT from './latest/page';
 import CryptoNewsSection from '@/components/CryptoNewsSection';
 import BreakingNews from '@/components/BreakingNews';
+import Categories from '@/components/Categories';
 
 export default function HomePage() {
 
@@ -13,7 +14,8 @@ export default function HomePage() {
       <NavLinks/>
       {/* <BreakingNews/>
       <NewsT/> */}
-      <CryptoNewsSection/>
+      {/* <CryptoNewsSection/> */}
+      <Categories/>
     </main>
   );
 }

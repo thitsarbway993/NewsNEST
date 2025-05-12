@@ -1,45 +1,112 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const validCategories = new Set(['sports', 'music', 'business', 'technology']);
-
 export async function GET(
   request: NextRequest,
   { params }: { params: { category: string } }
 ) {
-  const API_KEY = process.env.NEWSDATA_API_KEY;
-  const { searchParams } = new URL(request.url);
-  const page = searchParams.get('page') || '1';
-  const size = searchParams.get('size') || '4'; // Default to 4 items
-  const { category } = params;
-
-  if (!validCategories.has(category)) {
-    return NextResponse.json({
-      success: false,
-      error: 'Invalid category requested'
-    }, { status: 400 });
-  }
-
   try {
-    const url = new URL('https://newsdata.io/api/1/news');
-    url.searchParams.set('apikey', API_KEY!);
-    url.searchParams.set('category', category);
-    url.searchParams.set('page', page);
-    url.searchParams.set('size', size);
+    const { searchParams } = new URL(request.url);
+    const nextPage = searchParams.get('nextPage');
+    const size = '10';
+    const API_KEY = process.env.NEWSDATA_API_KEY;
+    const category = params.category.toLowerCase();
 
-    const response = await fetch(url.toString());
+    if (!API_KEY) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'API key is not configured' 
+      }, { status: 500 });
+    }
+
+    const categoryMappings: Record<string, string> = {
+      business: 'business',
+      technology: 'technology',
+      sports: 'sports',
+      entertainment: 'entertainment',
+      science: 'science',
+      health: 'health',
+      politics: 'politics',
+      world: 'world',
+      environment: 'environment',
+      education: 'top' // Using 'top' as fallback for education
+    };
+
+    if (!categoryMappings[category]) {
+      return NextResponse.json({
+        success: false,
+        error: 'Invalid category'
+      }, { status: 400 });
+    }
+
+    const baseUrl = 'https://newsdata.io/api/1/news';
+    const apiParams = new URLSearchParams({
+      apikey: API_KEY,
+      language: 'en',
+      size,
+      category: categoryMappings[category]
+    });
+
+    // Add additional query parameters for better relevance
+    switch (category) {
+      case 'business':
+        apiParams.append('q', 'business OR finance OR economy OR market OR company OR startup');
+        break;
+      case 'technology':
+        apiParams.append('q', 'technology OR innovation OR ai OR digital OR software OR tech');
+        break;
+      case 'sports':
+        apiParams.append('q', 'sports OR football OR basketball OR tennis OR athletics');
+        break;
+      case 'entertainment':
+        apiParams.append('q', 'entertainment OR movies OR music OR celebrity OR culture');
+        break;
+      case 'science':
+        apiParams.append('q', 'science OR research OR discovery OR technology OR innovation');
+        break;
+      case 'health':
+        apiParams.append('q', 'health OR wellness OR fitness OR medicine OR healthcare');
+        break;
+      case 'politics':
+        apiParams.append('q', 'politics OR government OR election OR policy OR law');
+        break;
+      case 'world':
+        apiParams.append('q', 'world OR global OR international OR news OR events');
+        break;
+    }
+
+    if (nextPage) {
+      apiParams.append('page', nextPage);
+    }
+
+    const url = `${baseUrl}?${apiParams.toString()}`;
+    console.log('Fetching category:', category, url);
+
+    const response = await fetch(url, {
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
     const data = await response.json();
+
+    if (data.status !== 'success') {
+      throw new Error(data.message || 'News API request failed');
+    }
 
     return NextResponse.json({
       success: true,
+      category,
       articles: data.results || [],
-      totalResults: data.totalResults || 0,
-      nextPage: data.nextPage || null
+      nextPage: data.nextPage || null,
+      totalResults: data.totalResults || 0
     });
 
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Error in categories API:', error);
+    
     return NextResponse.json({
       success: false,
-      error: `Failed to fetch ${category} news`
-    }, { status: 500 });
+      error: error.message || 'Failed to fetch category news'
+    }, { status: error.status || 500 });
   }
 }
