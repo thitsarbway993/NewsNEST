@@ -9,7 +9,7 @@ export async function GET(
     const nextPage = searchParams.get('nextPage');
     const size = '10';
     const API_KEY = process.env.NEWSDATA_API_KEY;
-    const category = params.category.toLowerCase();
+    const category = await params.category.toLowerCase();
 
     if (!API_KEY) {
       return NextResponse.json({ 
@@ -88,7 +88,6 @@ export async function GET(
     });
     
     const data = await response.json();
-    console.log('Response from News API:', data);
 
     if (data.status !== 'success') {
       throw new Error(data.message || 'News API request failed');

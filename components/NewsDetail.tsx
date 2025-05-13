@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import RandomNews from './RandomNews';
 
 interface NewsArticle {
   article_id: string;
@@ -125,62 +126,69 @@ export default function NewsDetail({ articleId, type = 'news' }: NewsDetailProps
           />
         )}
         <CardContent>
-          <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
-            {article.title}
-          </Typography>
-          
-          <Box sx={{ mb: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
-            <Avatar src={article.source_icon} />
-            <Typography color="text.secondary" variant="body2">
-              Source: {article.source_id}
-            </Typography>
-            {article.pubDate && (
-              <Typography color="text.secondary" variant="body2">
-                Published: {new Date(article.pubDate).toLocaleDateString()}
+          <Box className="container mx-auto mt-8 flex flex-col lg:flex-row gap-12">
+            <Box className="flex-1 space-y-6">
+              <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
+                {article.title}
               </Typography>
-            )}
-          </Box>
+              
+              <Box sx={{ mb: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+                <Avatar src={article.source_icon} />
+                <Typography color="text.secondary" variant="body2">
+                  Source: {article.source_id}
+                </Typography>
+                {article.pubDate && (
+                  <Typography color="text.secondary" variant="body2">
+                    Published: {new Date(article.pubDate).toLocaleDateString()}
+                  </Typography>
+                )}
+              </Box>
 
-          {article.category && article.category.length > 0 && (
-            <Box sx={{ mb: 3 }}>
-              {article.category.map((cat: string) => (
-                <Chip
-                  key={cat}
-                  label={cat}
+              {article.category && article.category.length > 0 && (
+                <Box sx={{ mb: 3 }}>
+                  {article.category.map((cat: string) => (
+                    <Chip
+                      key={cat}
+                      label={cat}
+                      sx={{ 
+                        mr: 1, 
+                        mb: 1,
+                        bgcolor: 'primary.light',
+                        color: 'primary.contrastText'
+                      }}
+                      size="small"
+                    />
+                  ))}
+                </Box>
+              )}
+
+              {article.description && (
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary" 
+                  sx={{ mb: 3, fontSize: '1.1rem', lineHeight: 1.6 }}
+                >
+                  {article.description}
+                </Typography>
+              )}
+
+              {article.content && (
+                <Typography 
+                  variant="body1" 
                   sx={{ 
-                    mr: 1, 
-                    mb: 1,
-                    bgcolor: 'primary.light',
-                    color: 'primary.contrastText'
+                    lineHeight: 1.8,
+                    fontSize: '1.2rem',
+                    whiteSpace: 'pre-line'
                   }}
-                  size="small"
-                />
-              ))}
+                >
+                  Content: {article.content}
+                </Typography>
+              )}
             </Box>
-          )}
-
-          {article.description && (
-            <Typography 
-              variant="body2" 
-              color="text.secondary" 
-              sx={{ mb: 3, fontSize: '1.1rem', lineHeight: 1.6 }}
-            >
-              {article.description}
-            </Typography>
-          )}
-
-          {article.content && (
-            <Typography 
-              variant="body1" 
-              sx={{ 
-                lineHeight: 1.8,
-                fontSize: '1.2rem',
-                whiteSpace: 'pre-line'
-              }}
-            >
-              Content: {article.content}
-            </Typography>
-          )}
+            <Box className="w-full lg:w-1/3 space-y-6">
+              <RandomNews/>
+            </Box>
+          </Box>
         </CardContent>
       </Card>
     </Container>

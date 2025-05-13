@@ -5,17 +5,18 @@ import NewsT from './latest/page';
 import CryptoNewsSection from '@/components/CryptoNewsSection';
 import BreakingNews from '@/components/BreakingNews';
 import Categories from '@/components/Categories';
+import RandomNews from '@/components/RandomNews';
 
 export default function HomePage() {
 
   return (
     <main style={{ padding: '1rem' }}>
       <InstallPWA />
-      <NavLinks/>
       {/* <BreakingNews/>
       <NewsT/> */}
-      {/* <CryptoNewsSection/> */}
-      <Categories/>
+      <CryptoNewsSection/>
+      {/* <Categories/> */}
+      {/* <RandomNews/> */}
     </main>
   );
 }
