@@ -6,7 +6,7 @@ export async function GET(
 ) {
   try {
     const API_KEY = process.env.NEWSDATA_API_KEY;
-    const { id, type } = params;
+    const { id, type } = await params;
     const validTypes = ['latest', 'news', 'all'];
 
     if (!API_KEY) {

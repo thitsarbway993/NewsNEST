@@ -119,7 +119,7 @@ export default function NewsDetail({ articleId, type = 'news' }: NewsDetailProps
             image={article.image_url}
             alt={article.title}
             sx={{ 
-              objectFit: 'cover',
+              objectFit: 'contain',
               objectPosition: 'center'
             }}
           />
