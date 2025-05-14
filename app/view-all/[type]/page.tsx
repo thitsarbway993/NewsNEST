@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Button, CircularProgress, Container, CardMedia, Card, CardContent, CardActionArea, ButtonBase } from '@mui/material';
-import ArticleCard from '@/components/ArticleCard';
+import { Typography, Button, CircularProgress, CardMedia, Card, CardContent, CardActionArea, ButtonBase } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
 import { Box, Avatar } from '@mui/material';
 

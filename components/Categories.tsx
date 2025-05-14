@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import CatTag from './CatTag';
 
 interface NewsArticle {
   article_id: string;
@@ -23,10 +24,7 @@ export default function Categories() {
   const router = useRouter();
 
   const topCategories = [ 'Sports', 'Entertainment', 'Environment', 'Health' ];
-  const popularCategories = [
-    'Business', 'Technology', 'Sports', 'Entertainment',
-    'Science', 'Health', 'Politics', 'World', 'Environment', 'Education'
-  ];
+
 
   const NewsCard = ({ article }: { article: NewsArticle }) => {
     const handleArticleClick = () => {
@@ -77,23 +75,7 @@ export default function Categories() {
     </div>
   );
 
-    const NavCategories = () => (
-      <Box className="bg-white shadow-md py-4 sticky top-0 z-10">
-        <Box className="container mx-auto px-4">
-          <div className="flex gap-4 overflow-x-auto no-scrollbar">
-            {popularCategories.map((category) => (
-              <Button
-                key={category}
-                onClick={() => router.push(`/category/${category.toLowerCase()}`)}
-                className="whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200"
-              >
-                {category}
-              </Button>
-            ))}
-          </div>
-        </Box>
-      </Box>
-    );
+
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -126,7 +108,7 @@ export default function Categories() {
 
   return (
     <div className="space-y-10 px-6 py-10 bg-white">
-      <NavCategories />
+      <CatTag />
       {Array.from({ length: Math.ceil(categories.length / 8) }).map((_, index) => (
         <div
           key={index}
