@@ -9,7 +9,7 @@ const CatTag = () => {
             ];
     const router = useRouter();
     return (
-      <Box className="bg-white shadow-md py-4 sticky top-0 z-10">
+      <Box className="bg-white shadow-md py-4 ">
         <Box className="container mx-auto px-4">
           <div className="flex gap-4 overflow-x-auto no-scrollbar">
             {popularCategories.map((category) => (
