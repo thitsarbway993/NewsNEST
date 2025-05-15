@@ -16,8 +16,6 @@ export default function HomePage() {
       <CryptoNewsSection />
       <CatTag />
       <Footer/>
-      {/* <Categories/> */}
-      {/* <RandomNews/> */}
     </main>
   );
 }

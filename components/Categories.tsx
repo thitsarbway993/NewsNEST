@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { useRouter } from 'next/navigation';

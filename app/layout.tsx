@@ -26,7 +26,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Navbar/>
-        {children}
+        <div className='mt-16'>
+          {children}
+        </div>
         <script
           dangerouslySetInnerHTML={{
             __html: `

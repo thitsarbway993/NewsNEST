@@ -29,7 +29,7 @@ export default function Footer() {
           <CardMedia
             component="img"
             height="140"
-            image="/icons/icon.png"
+            image="/icons/icon-152x152.png"
             alt="Description"
           />
         </Box>
@@ -99,7 +99,7 @@ export default function Footer() {
             © 2025 NewsNEST.
           </Typography>
           <IconButton className="bg-red-600 text-white p-2 hover:bg-red-700">
-            <ArrowUpwardIcon />  
+            <ArrowUpwardIcon onClick={() => window.scrollTo(0, 0)} />
           </IconButton>
         </Box>
       </Box>
