@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Box, CircularProgress, Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface NewsArticle {
   article_id: string;
@@ -79,10 +80,12 @@ export default function CategoryPage({ category }: CategoryPageProps) {
               className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow duration-200"
               onClick={() => handleArticleClick(article.article_id)}
             >
-              <img
+              <Image
                 src={article.image_url || '/icons/icon-512x512.png'}
                 alt={article.title}
                 className="w-full h-48 object-cover"
+                 fill
+    style={{ objectFit: 'cover' }}
               />
               <div className="p-4 space-y-2">
                 <div className="flex items-center text-sm text-gray-500 gap-2">

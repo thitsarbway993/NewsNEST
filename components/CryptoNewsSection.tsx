@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Typography, Button, CircularProgress, Card, CardMedia, CardContent, Avatar, CardActionArea } from '@mui/material';
+import { Box, Typography, Button, CircularProgress, Card, CardMedia, CardContent, CardActionArea } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { getCachedArticles, storeArticles, clearOldCache } from '@/app/db/clientDB';
 
 interface NewsArticle {
   article_id: string;
@@ -24,18 +25,47 @@ export default function CryptoNewsSection() {
       setLoading(true);
       setError('');
 
-      const response = await fetch('/api/multi/all');
-      const result = await response.json();
-      console.log('API response:', result);
+      if (navigator.onLine) {
+        const response = await fetch('/api/multi/all');
+        const result = await response.json();
 
-      if (!result.success) throw new Error(result.error);
+        if (!result.success) throw new Error(result.error);
 
-      // Take only the first 4 articles
-      const limitedArticles = result.articles.slice(0, 4);
-      setArticles(limitedArticles);
+        // Store first 10 articles in cache (more than we display)
+        const articlesToCache = result.articles.slice(0, 10);
+        await storeArticles(articlesToCache, 'crypto');
+        
+        // Display only first 4
+        const limitedArticles = result.articles.slice(0, 4);
+        setArticles(limitedArticles);
+
+        // Clear old cached articles (older than 24h)
+        await clearOldCache();
+      } else {
+        // Load from cache if offline
+        const cached = await getCachedArticles('crypto');
+        if (cached && cached.length > 0) {
+          setArticles(cached.slice(0, 4));
+          setError('Offline mode: Showing cached articles');
+        } else {
+          throw new Error('No cached articles available');
+        }
+      }
     } catch (err: any) {
-      setError(err.message);
       console.error('Error fetching articles:', err);
+      
+      // Try to load from cache as fallback
+      try {
+        const cached = await getCachedArticles('crypto');
+        if (cached && cached.length > 0) {
+          setArticles(cached.slice(0, 4));
+          setError('Unable to fetch new articles. Showing cached content.');
+        } else {
+          setError('No articles available. Please check your connection.');
+        }
+      } catch (cacheErr) {
+        setError('Failed to load articles. Please try again later.' + cacheErr.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -47,6 +77,23 @@ export default function CryptoNewsSection() {
 
   useEffect(() => {
     loadInitialArticles();
+
+    const handleOnline = () => {
+      setError('');
+      loadInitialArticles();
+    };
+
+    const handleOffline = () => {
+      setError('You are offline. Showing cached articles.');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, []);
 
   const handleViewAll = () => {

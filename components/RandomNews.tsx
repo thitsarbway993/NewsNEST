@@ -64,7 +64,7 @@ export default function RandomNews() {
     };
 
     fetchRandomNews();
-  }, []);
+  }, [ ]);
 
   const handleArticleClick = (articleId: string, category: string) => {
     router.push(`/news/${articleId}?type=${category}`);

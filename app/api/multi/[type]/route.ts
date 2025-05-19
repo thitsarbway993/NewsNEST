@@ -10,7 +10,6 @@ export async function GET(
     const size = '10';
     const API_KEY = process.env.NEWSDATA_API_KEY;
     const type = await params.type;
-    const validTypes = ['latest', 'news', 'all'];
     console.log('Type:', type);
 
     if (!API_KEY) {

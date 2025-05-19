@@ -19,12 +19,11 @@ const CatTag = () => {
                 className="whitespace-nowrap px-4 py-2 rounded-full text-orange-600 bg-orange-100 hover:bg-orange-200"
                 sx={{
                   fontWeight: 600,
-                  color: '#ff6900',
-                  backgroundColor: '#f5f5f5',
+                  color: '#FFA500',
+                  backgroundColor: '##f9fae3',
                   borderRadius: '20px',
                   fontSize: '14px',
                   '&:hover': {
-                    backgroundColor: '#f5f5f5',
                     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
                     border: '1px solidhsl(25, 49.60%, 49.00%)',
                     transform: 'scale(1.05)',

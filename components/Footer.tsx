@@ -54,7 +54,7 @@ export default function Footer() {
                   size="small"
                 >
                   <Avatar
-                    src={`/icons/icon.png`}
+                    src={`/icons/icon-72x72.png`}
                     variant="square"
                     className="w-5 h-5"
                   />

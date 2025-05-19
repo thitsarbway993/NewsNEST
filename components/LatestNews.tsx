@@ -1,8 +1,9 @@
+'use client'
 import React from 'react'
 import { useEffect, useState } from 'react';
 import { Box, Typography, Card, CardMedia, CardContent, Chip, CircularProgress, Alert, CardActionArea } from '@mui/material';
 import AccessTime from '@mui/icons-material/AccessTime';
-import { getCachedArticles, storeArticles } from '@/app/db/clientDB';
+import { clearOldCache, getCachedArticles, storeArticles } from '@/app/db/clientDB';
 import { useRouter } from 'next/navigation';
 
 interface NewsArticle {
@@ -22,30 +23,76 @@ export default function LatestNews() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-   const loadInitialArticles = async () => {
+  const loadInitialArticles = async () => {
     try {
       setLoading(true);
       setError('');
 
-      //const response = await fetch('/api/multi/news?type=all');
-      const response = await fetch('/api/multi/latest');
-      const result = await response.json();
-      console.log('API response:', result);
+      // Try to load from network first
+      if (navigator.onLine) {
+        const response = await fetch('/api/multi/latest');
+        const result = await response.json();
 
-      if (!result.success) throw new Error(result.error);
+        if (!result.success) throw new Error(result.error);
 
-      // Take only the first 4 articles
-      const limitedArticles = result.articles.slice(0, 4);
-      setArticles(limitedArticles);
+        // Store in IndexedDB for offline use
+        const limitedArticles = result.articles.slice(0, 4);
+        await storeArticles(limitedArticles, 'latest');
+        setArticles(limitedArticles);
+        
+        // Clear old cached articles
+        await clearOldCache();
+      } else {
+        // Load from cache if offline
+        const cached = await getCachedArticles('latest');
+        if (cached && cached.length > 0) {
+          setArticles(cached.slice(0, 4));
+          setError('Offline mode: Showing cached articles');
+        } else {
+          throw new Error('No cached articles available');
+        }
+      }
     } catch (err: any) {
-      setError(err.message);
       console.error('Error fetching articles:', err);
+      
+      // Try to load from cache as fallback
+      try {
+        const cached = await getCachedArticles('latest');
+        if (cached && cached.length > 0) {
+          setArticles(cached.slice(0, 4));
+          setError('Unable to fetch new articles. Showing cached content.');
+        } else {
+          setError('No articles available. Please check your connection.');
+        }
+      } catch (cacheErr) {
+        setError('Failed to load articles. Please try again later.');
+        console.error('Cache error:', cacheErr);
+      }
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     loadInitialArticles();
+
+    // Add online/offline listeners
+    const handleOnline = () => {
+      setError('');
+      loadInitialArticles();
+    };
+
+    const handleOffline = () => {
+      setError('You are offline. Showing cached articles.');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, []);
 
   const handleNewsClick = (articleId: string) => {
@@ -71,7 +118,7 @@ export default function LatestNews() {
                   alt={articles[0].title}
                   className="rounded-xl"
                 />
-                <Box className="flex items-center mt-4 space-x-4">
+                <Box className="flex items-center mt-4 space-x-4 px-4">
                   {articles[0].category?.map((cat, index) => (
                     <Chip 
                       key={index}
@@ -85,7 +132,7 @@ export default function LatestNews() {
                     <span>{articles[0].pubDate }</span>
                   </Box>
                 </Box>
-                <Typography variant="h4" className="mt-2 mb-4 font-bold leading-tight pb-4">
+                <Typography variant="h4" className="px-4 mt-2 mb-4 font-bold leading-tight pb-4">
                   {articles[0].title}
                 </Typography>
               </CardActionArea>
@@ -95,7 +142,7 @@ export default function LatestNews() {
 
         {/* Sidebar Articles - Remaining Articles */}
         <Box className="w-full lg:w-1/3 space-y-6">
-          {articles.slice(1, 4).map((article, idx) => (
+          {articles.slice(1, 4).map((article) => (
             <Card 
               key={article.article_id} 
               className="flex cursro-pointer items-center shadow-none flex-col sm:flex-row lg:flex-col xl:flex-row hover:shadow-lg transition-shadow duration-300"

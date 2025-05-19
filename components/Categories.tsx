@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Box, Typography, Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import CatTag from './CatTag';
+import Image from 'next/image';
 
 interface NewsArticle {
   article_id: string;
@@ -37,10 +37,12 @@ export default function Categories() {
         className="space-y-2 flex-1 cursor-pointer hover:opacity-90 transition-opacity" 
         onClick={handleArticleClick}
       >
-        <img 
+        <Image 
           src={article.image_url || '/icons/icon-256x256.png'} 
           alt={article.title} 
-          className="rounded-xl w-full h-[160px] object-contain" 
+          className="rounded-xl w-full h-[160px] object-contain"
+          width={500}
+          height={160}
         />
         <div className="text-sm text-gray-600 flex items-center gap-1">
           <span className="text-black font-medium">{article.source_id}</span>
