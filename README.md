@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Project Overview 
+A Progressive Web App (PWA) that aggregates news articles from multiple sources using the Newsdata.io API. Features include:
 
-## Getting Started
+* Offline-first architecture
 
-First, run the development server:
+* Responsive UI with Material-UI
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* Category-based news filtering
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* Article caching with IndexedDB
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* Installable PWA capabilities
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* Detailed article viewing
 
-## Learn More
+---
+ 
+## Key Features 
+### Core Features
+📱 PWA Functionality
 
-To learn more about Next.js, take a look at the following resources:
+* Web App Manifest
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* Service Worker caching
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+* Offline access to articles
 
-## Deploy on Vercel
+🗞️ News Aggregation
 
-The easiest way to deploy your Next.js app  to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* Multiple news categories
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* Breaking news section
+
+* Crypto-focused news
+
+💾 Data Management
+
+* IndexedDB storage
+
+* Network-first then cache strategy
+
+* Automatic article caching
+
+## Advanced Features
+* 🔔 Push Notifications (Implementation ready)
+
+* 🚀 Performance Optimizations
+
+* 🔍 SEO-friendly structure
+
+* 📲 Native-app like experience
+
+***
+
+## Important Restrictions for Development:
+
+### API Calls
+
+* 📉 200 requests/day
+
+* ⏱️ 1 request/second rate limit
+
+### Data Limitations
+
+* 📜 30 API credits per 15 minutes
+
+* ⏳ Each credit allows retrieval of up to 10 articles, can only fetch up to 300 articles per 15 minutes
