@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Box, Typography, Tabs, Tab, CircularProgress, Alert } from '@mui/material';
 import { getCachedArticles } from '@/app/db/clientDB';
 import Image from 'next/image';
+import { NewsArticle, APIError } from '@/types/news';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -30,8 +31,8 @@ function TabPanel(props: TabPanelProps) {
 
 export default function OfflinePage() {
   const [value, setValue] = useState(0);
-  const [latestNews, setLatestNews] = useState<any[]>([]);
-  const [cryptoNews, setCryptoNews] = useState<any[]>([]);
+  const [latestNews, setLatestNews] = useState<NewsArticle[]>([]);
+  const [cryptoNews, setCryptoNews] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -60,9 +61,10 @@ export default function OfflinePage() {
         if (!latestCached?.length && !cryptoCached?.length) {
           setError('No cached content available');
         }
-      } catch (err) {
+      } catch (err: unknown) {
+        const error = err as APIError;
         setError('Failed to load cached content');
-        console.error('Error loading cached content:', err);
+        console.error('Error loading cached content:', error);
       } finally {
         setLoading(false);
       }
@@ -71,7 +73,7 @@ export default function OfflinePage() {
     loadCachedContent();
   }, []);
 
-  const NewsCard = ({ article }: { article: any }) => (
+  const NewsCard = ({ article }: { article: NewsArticle }) => (
     <Box className="bg-white rounded-lg shadow-sm p-4 mb-4">
       {article.image_url && (
         <Image 
@@ -88,7 +90,7 @@ export default function OfflinePage() {
         {article.description}
       </Typography>
       <Typography variant="caption" color="text.secondary">
-        Source: {article.source_id} • Cached on: {new Date(article.timestamp).toLocaleString()}
+        Source: {article.source_id} • Cached on: {article.pubDate ? new Date(article.pubDate).toLocaleDateString() : 'Unknown'}
       </Typography>
     </Box>
   );

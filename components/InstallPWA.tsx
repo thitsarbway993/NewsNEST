@@ -2,25 +2,27 @@
 
 import { useEffect, useState } from 'react';
 import { Button, Alert } from '@mui/material';
+import { BeforeInstallPromptEvent } from '@/types/pwa';
 
 export default function InstallPWA() {
-  const [installPrompt, setInstallPrompt] = useState<Event | null>(null);
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     const handler = (e: Event) => {
       e.preventDefault();
-      setInstallPrompt(e);
+      setInstallPrompt(e as BeforeInstallPromptEvent);
     };
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
-  const handleInstall = () => {
+  const handleInstall = async () => {
     if (installPrompt) {
-      (installPrompt as any).prompt();
-      (installPrompt as any).userChoice.then(() => {
+      await installPrompt.prompt();
+      const result = await installPrompt.userChoice;
+      if (result.outcome === 'accepted') {
         setInstallPrompt(null);
-      });
+      }
     }
   };
 

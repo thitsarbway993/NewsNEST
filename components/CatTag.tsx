@@ -16,11 +16,10 @@ const CatTag = () => {
               <Button
                 key={category}
                 onClick={() => router.push(`/category/${category.toLowerCase()}`)}
-                className="whitespace-nowrap px-4 py-2 rounded-full text-orange-600 bg-orange-100 hover:bg-orange-200"
+                className="whitespace-nowrap px-4 py-2 rounded-full text-orange-600 hover:bg-orange-200"
                 sx={{
                   fontWeight: 600,
                   color: '#FFA500',
-                  backgroundColor: '##f9fae3',
                   borderRadius: '20px',
                   fontSize: '14px',
                   '&:hover': {

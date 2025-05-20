@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Box, CircularProgress, Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -17,6 +17,10 @@ interface CategoryPageProps {
   category: string;
 }
 
+interface APIError extends Error {
+  status?: number;
+}
+
 export default function CategoryPage({ category }: CategoryPageProps) {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +28,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
   const [nextPage, setNextPage] = useState<string | null>(null);
   const router = useRouter();
 
-  const fetchCategoryArticles = async (pageToken?: string) => {
+  const fetchCategoryArticles = useCallback(async (pageToken?: string) => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -43,16 +47,17 @@ export default function CategoryPage({ category }: CategoryPageProps) {
         setArticles(data.articles);
       }
       setNextPage(data.nextPage);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (error: unknown) {
+      const apiError = error as APIError;
+      setError(apiError.message || 'Failed to fetch articles');
     } finally {
       setLoading(false);
     }
-  };
+  }, [category]);
 
   useEffect(() => {
     fetchCategoryArticles();
-  }, [category]);
+  }, [fetchCategoryArticles]);
 
   const handleArticleClick = (articleId: string) => {
     router.push(`/news/${articleId}?type=${category.toLowerCase()}`);

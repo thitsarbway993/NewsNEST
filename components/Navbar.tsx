@@ -2,11 +2,11 @@
 import {  Box,  Toolbar, Typography } from '@mui/material'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React from 'react'
 
 const Navbar = () => {
   const router = useRouter()
-  const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const isOnline = typeof window !== 'undefined' && window.navigator.onLine
   return (
     <>
     <Box className="bg-white h-1 w-full sticky top-0 z-40" >

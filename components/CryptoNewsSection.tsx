@@ -14,6 +14,11 @@ interface NewsArticle {
   source_id: string;
 }
 
+interface APIError extends Error {
+  status?: number;
+  message: string;
+}
+
 export default function CryptoNewsSection() {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,7 +56,7 @@ export default function CryptoNewsSection() {
           throw new Error('No cached articles available');
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching articles:', err);
       
       // Try to load from cache as fallback
@@ -63,8 +68,9 @@ export default function CryptoNewsSection() {
         } else {
           setError('No articles available. Please check your connection.');
         }
-      } catch (cacheErr) {
-        setError('Failed to load articles. Please try again later.' + cacheErr.message);
+      } catch (cacheErr: unknown) {
+        const cacheError = cacheErr as APIError;
+        setError(`Failed to load articles. Please try again later. ${cacheError.message}`);
       }
     } finally {
       setLoading(false);

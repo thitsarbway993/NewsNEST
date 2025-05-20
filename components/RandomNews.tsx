@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface NewsArticle {
   article_id: string;
@@ -12,13 +13,17 @@ interface NewsArticle {
   pubDate?: string;
 }
 
+interface APIError extends Error {
+  status?: number;
+}
+
 export default function RandomNews() {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const availableEndpoints = [
+  const availableEndpoints = useMemo(() => [
     'business',
     'technology',
     'sports',
@@ -27,12 +32,12 @@ export default function RandomNews() {
     'health',
     'politics',
     'world'
-  ];
+  ], []);
 
-  const getRandomEndpoints = (count: number) => {
-    const shuffled = availableEndpoints.sort(() => 0.5 - Math.random());
+  const getRandomEndpoints = useCallback((count: number) => {
+    const shuffled = [...availableEndpoints].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
-  };
+  }, [availableEndpoints]);
 
   useEffect(() => {
     const fetchRandomNews = async () => {
@@ -55,16 +60,17 @@ export default function RandomNews() {
         );
 
         setArticles(results);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching random news:', err);
-        setError(err.message || 'Failed to fetch news');
+        const error = err as APIError;
+        setError(error.message || 'Failed to fetch news');
       } finally {
         setLoading(false);
       }
     };
 
     fetchRandomNews();
-  }, [ ]);
+  }, [getRandomEndpoints]);
 
   const handleArticleClick = (articleId: string, category: string) => {
     router.push(`/news/${articleId}?type=${category}`);
@@ -101,7 +107,7 @@ export default function RandomNews() {
           >
             <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
               <div className="relative h-48">
-                <img
+                <Image
                   src={article.image_url || '/icons/icon-512x512.png'}
                   alt={article.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
@@ -117,7 +123,7 @@ export default function RandomNews() {
                 <div className="flex items-center text-sm text-gray-500 mb-2">
                   <span className="font-medium text-black">{article.source_id}</span>
                   <span className="mx-2">•</span>
-                  <span>{new Date(article.pubDate || '').toLocaleDateString()}</span>
+                  <span className="">{new Date(article.pubDate || '').toLocaleDateString()}</span>
                 </div>
                 
                 <h3 className="font-semibold text-lg leading-tight mb-2 line-clamp-2">

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { NewsDataAPIResponse, APIError } from '@/types/api';
 
 export async function GET(
   request: NextRequest,
@@ -9,7 +10,7 @@ export async function GET(
     const nextPage = searchParams.get('nextPage');
     const size = '10';
     const API_KEY = process.env.NEWSDATA_API_KEY;
-    const category = await params.category.toLowerCase();
+    const category = params.category.toLowerCase(); // Removed await here
 
     if (!API_KEY) {
       return NextResponse.json({ 
@@ -87,7 +88,7 @@ export async function GET(
       }
     });
     
-    const data = await response.json();
+    const data = await response.json() as NewsDataAPIResponse;
 
     if (data.status !== 'success') {
       throw new Error(data.message || 'News API request failed');
@@ -101,12 +102,13 @@ export async function GET(
       totalResults: data.totalResults || 0
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in categories API:', error);
     
+    const apiError = error as APIError;
     return NextResponse.json({
       success: false,
-      error: error.message || 'Failed to fetch category news'
-    }, { status: error.status || 500 });
+      error: apiError.message || 'Failed to fetch category news'
+    }, { status: apiError.status || 500 });
   }
 }

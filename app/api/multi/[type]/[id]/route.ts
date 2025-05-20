@@ -1,3 +1,4 @@
+import { APIError, NewsDataAPIResponse } from '@/types/api';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
@@ -32,7 +33,7 @@ export async function GET(
       }
     });
     
-    const data = await response.json();
+    const data = await response.json() as NewsDataAPIResponse;
 
     if (data.status !== 'success') {
       throw new Error(data.message || 'News API request failed');
@@ -50,15 +51,16 @@ export async function GET(
     return NextResponse.json({
       success: true,
       article: data.results[0],
-      type // Include the type in response
+      type: type // Include the type in response
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in news API:', error);
     
+    const apiError = error as APIError;
     return NextResponse.json({
       success: false,
-      error: error.message || 'Failed to fetch article'
-    }, { status: error.status || 500 });
+      error: apiError.message || 'Failed to fetch article'
+    }, { status: apiError.status || 500 });
   }
 }

@@ -1,12 +1,26 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Button, CircularProgress, CardMedia, Card, CardContent, CardActionArea, ButtonBase } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
 import { Box, Avatar } from '@mui/material';
 
+interface NewsArticle {
+  article_id: string;
+  title: string;
+  description?: string;
+  image_url?: string;
+  source_name?: string;
+  source_icon?: string;
+  source_id: string;
+}
+
+interface APIError extends Error {
+  status?: number;
+}
+
 export default function ViewAllCrypto() {
-  const [articles, setArticles] = useState<any[]>([]);
+  const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -15,10 +29,9 @@ export default function ViewAllCrypto() {
   let typ = params.type as string;
   if (typ === 'all') {
     typ = 'cryptocurrency';
-  } 
+  }
 
-
-  const loadArticles = async () => {
+  const loadArticles = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -45,20 +58,21 @@ export default function ViewAllCrypto() {
       setArticles(prev => [...prev, ...result.articles]);
       setNextPage(result.nextPage);
       
-    } catch (err: any) {
-      console.error('Error loading articles:', err);
-      setError(err.message || 'Failed to load articles');
+    } catch (error) {
+      const apiError = error as APIError;
+      console.error('Error loading articles:', apiError);
+      setError(apiError.message || 'Failed to load articles');
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.type, nextPage]); // Add dependencies used inside the callback
    const handleClick = (id : string) => {
     router.push(`/news/${id} ?type=${params.type}`);
   };
 
   useEffect(() => {
     loadArticles();
-  }, [params.type]); 
+  }, [params.type, loadArticles]); 
 
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f6f1e9', p: 4 }}>

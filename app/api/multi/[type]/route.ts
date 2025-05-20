@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { NewsDataAPIResponse, APIError } from '@/types/api';
 
 export async function GET(
   request: NextRequest,
@@ -80,7 +81,7 @@ export async function GET(
       }
     });
     
-    const data = await response.json();
+    const data = await response.json() as NewsDataAPIResponse;
 
     if (data.status !== 'success') {
       throw new Error(data.message || 'News API request failed');
@@ -91,15 +92,16 @@ export async function GET(
       articles: data.results || [],
       nextPage: data.nextPage || null,
       totalResults: data.totalResults || 0,
-      type: type // Include the type in response
+      type: type
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in news API:', error);
     
+    const apiError = error as APIError;
     return NextResponse.json({
       success: false,
-      error: error.message || 'Failed to fetch news'
-    }, { status: error.status || 500 });
+      error: apiError.message || 'Failed to fetch news'
+    }, { status: apiError.status || 500 });
   }
 }

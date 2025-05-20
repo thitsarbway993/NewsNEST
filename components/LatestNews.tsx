@@ -5,17 +5,7 @@ import { Box, Typography, Card, CardMedia, CardContent, Chip, CircularProgress, 
 import AccessTime from '@mui/icons-material/AccessTime';
 import { clearOldCache, getCachedArticles, storeArticles } from '@/app/db/clientDB';
 import { useRouter } from 'next/navigation';
-
-interface NewsArticle {
-  article_id: string;
-  title: string;
-  description: string;
-  content: string;
-  image_url?: string;
-  category?: string[];
-  source_id: string;
-  pubDate?: string;
-}
+import { NewsArticle, APIError } from '@/types/news';
 
 export default function LatestNews() {
   const router = useRouter();
@@ -52,7 +42,7 @@ export default function LatestNews() {
           throw new Error('No cached articles available');
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching articles:', err);
       
       // Try to load from cache as fallback
@@ -64,9 +54,10 @@ export default function LatestNews() {
         } else {
           setError('No articles available. Please check your connection.');
         }
-      } catch (cacheErr) {
+      } catch (cacheErr: unknown) {
+        const cacheError = cacheErr as APIError;
         setError('Failed to load articles. Please try again later.');
-        console.error('Cache error:', cacheErr);
+        console.error('Cache error:', cacheError);
       }
     } finally {
       setLoading(false);

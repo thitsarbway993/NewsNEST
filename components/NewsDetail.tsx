@@ -17,18 +17,7 @@ import {
 import { useRouter } from 'next/navigation';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import RandomNews from './RandomNews';
-
-interface NewsArticle {
-  article_id: string;
-  title: string;
-  description: string | null;
-  content: string | null;
-  image_url?: string | null;
-  category?: string[];
-  source_id: string;
-  pubDate?: string;
-  source_icon?: string;
-}
+import { NewsArticle, APIError, APIResponse } from '@/types/news';
 
 interface NewsDetailProps {
   articleId: string;
@@ -53,17 +42,17 @@ export default function NewsDetail({ articleId, type = 'news' }: NewsDetailProps
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const data = await response.json();
+        const data = await response.json() as APIResponse;
+        
         if (!data.success) {
           throw new Error(data.error || 'Failed to fetch article');
         }
 
-        setArticle(data.article);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load article');
-        console.error('Error loading article:', err);
-      } finally {
-        setLoading(false);
+        setArticle(data.article || null);
+      } catch (err: unknown) {
+        const error = err as APIError;
+        setError(error.message || 'Failed to load article');
+        console.error('Error loading article:', error);
       }
     };
 
