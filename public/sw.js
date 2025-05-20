@@ -43,8 +43,9 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then(response => {
-          const responseToCache = response.clone();
-          if (response.ok) {
+          // Only cache GET requests
+          if (response.ok && request.method === 'GET') {
+            const responseToCache = response.clone();
             caches.open(API_CACHE)
               .then(cache => {
                 cache.put(request, responseToCache);
@@ -53,8 +54,15 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(async () => {
-          const cachedResponse = await caches.match(request);
-          return cachedResponse || new Response(JSON.stringify({
+          // Only try to return cached response for GET requests
+          if (request.method === 'GET') {
+            const cachedResponse = await caches.match(request);
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+          }
+          
+          return new Response(JSON.stringify({
             success: false,
             error: 'You are offline'
           }), {
@@ -65,7 +73,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Handle static assets
+  // Handle static assets (these are always GET requests)
   event.respondWith(
     caches.match(request)
       .then(response => {
@@ -86,7 +94,6 @@ self.addEventListener('fetch', (event) => {
 
           return response;
         }).catch(() => {
-          // Instead of returning offline.html, let the React app handle offline state
           if (request.mode === 'navigate') {
             return caches.match('/');
           }

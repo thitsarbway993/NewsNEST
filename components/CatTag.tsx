@@ -11,25 +11,13 @@ const CatTag = () => {
     return (
       <Box className="bg-white shadow-md py-4 ">
         <Box className="container mx-auto px-4">
-          <div className="flex gap-4 overflow-x-auto no-scrollbar justify-around py-4">
+          <div className="flex gap-4 overflow-x-auto no-scrollbar justify-around py-4 flex-wrap">
             {popularCategories.map((category) => (
               <Button
                 key={category}
                 onClick={() => router.push(`/category/${category.toLowerCase()}`)}
-                className="whitespace-nowrap px-4 py-2 rounded-full text-orange-600 hover:bg-orange-200"
-                sx={{
-                  fontWeight: 600,
-                  color: '#FFA500',
-                  borderRadius: '20px',
-                  fontSize: '14px',
-                  '&:hover': {
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                    border: '1px solidhsl(25, 49.60%, 49.00%)',
-                    transform: 'scale(1.05)',
-                    transition: 'transform 0.2s ease-in-out',
-
-                  },
-                }}
+                className="whitespace-nowrap px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition duration-200"
+                
               >
                 {category}
               </Button>

@@ -1,16 +1,21 @@
-import { NextRequest, NextResponse } from 'next/server';
+import {  NextRequest, NextResponse } from 'next/server';
 import { NewsDataAPIResponse, APIError } from '@/types/api';
 
+// Add route segment config
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// Update GET handler with correct context type
 export async function GET(
   request: NextRequest,
-  { params }: { params: { category: string } }
+  {params}: { params: { category: string } }
 ) {
   try {
     const { searchParams } = new URL(request.url);
     const nextPage = searchParams.get('nextPage');
     const size = '10';
     const API_KEY = process.env.NEWSDATA_API_KEY;
-    const category = params.category.toLowerCase(); // Removed await here
+    const category = params.category.toLowerCase();
 
     if (!API_KEY) {
       return NextResponse.json({ 
