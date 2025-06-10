@@ -10,12 +10,13 @@ export const metadata: Metadata = {
   description: 'Progressive Web App for News Aggregation',
   manifest: '/manifest.json',
   themeColor: '#1976d2',
-  viewport: 'width=device-width, initial-scale=1',
   icons: {
     icon: '/icons/icon-192x192.png',
     apple: '/icons/icon-192x192.png',
   },
 };
+
+export const viewport = 'width=device-width, initial-scale=1';
 
 export default function RootLayout({
   children,

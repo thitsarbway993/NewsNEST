@@ -1,15 +1,15 @@
-import {  NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { NewsDataAPIResponse, APIError } from '@/types/api';
 
 // Add route segment config
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// Update GET handler with correct context type
+// Update GET handler to use the correct context type
 export async function GET(
   request: NextRequest,
-  {params}: { params: { category: string } }
-) {
+  { params }: { params: { category: string } }
+): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url);
     const nextPage = searchParams.get('nextPage');
